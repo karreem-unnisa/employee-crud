@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Management</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { margin: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    button { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>Employee Information</h2>
+
+<input id="name" placeholder="Name">
+<input id="age" placeholder="Age">
+<input id="mobile" placeholder="Mobile">
+<input id="city" placeholder="City">
+<input id="department" placeholder="Department">
+<input id="salary" placeholder="Salary">
+<button onclick="addEmployee()">Add</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Mobile</th>
+      <th>City</th>
+      <th>Department</th>
+      <th>Salary</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+const api = "/api/employees";
+
+async function fetchEmployees() {
+  const res = await fetch(api);
+  const data = await res.json();
+  const body = document.getElementById("tableBody");
+  body.innerHTML = "";
+  data.forEach(emp => {
+    body.innerHTML += `
+      <tr>
+        <td>${emp.id}</td>
+        <td>${emp.name}</td>
+        <td>${emp.age}</td>
+        <td>${emp.mobile}</td>
+        <td>${emp.city}</td>
+        <td>${emp.department}</td>
+        <td>${emp.salary}</td>
+        <td>
+          <button onclick="editEmployee(${emp.id})">Edit</button>
+          <button onclick="deleteEmployee(${emp.id})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function addEmployee() {
+  const employee = {
+    name: name.value,
+    age: age.value,
+    mobile: mobile.value,
+    city: city.value,
+    department: department.value,
+    salary: salary.value
+  };
+  await fetch(api, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(employee)
+  });
+  fetchEmployees();
+}
+
+async function deleteEmployee(id) {
+  await fetch(`${api}/${id}`, { method: "DELETE" });
+  fetchEmployees();
+}
+
+async function editEmployee(id) {
+  const name = prompt("Enter name");
+  const age = prompt("Enter age");
+  const mobile = prompt("Enter mobile");
+  const city = prompt("Enter city");
+  const department = prompt("Enter department");
+  const salary = prompt("Enter salary");
+
+  await fetch(`${api}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, age, mobile, city, department, salary })
+  });
+  fetchEmployees();
+}
+
+fetchEmployees();
+</script>
+
+</body>
+</html>
