@@ -8,19 +8,19 @@ app.use(express.static("public"));
 let employees = [];
 let idCounter = 1;
 
-/* 1. Get All Employees */
+
 app.get("/api/employees", async (req, res) => {
   res.status(200).json(employees);
 });
 
-/* 2. Get Employee by ID */
+
 app.get("/api/employees/:id", async (req, res) => {
   const id = Number(req.params.id);
   const employee = employees.find(e => e.id === id);
   res.status(200).json(employee || {});
 });
 
-/* 3. Add New Employee */
+
 app.post("/api/employees", async (req, res) => {
   const newEmployee = {
     id: idCounter++,
@@ -30,7 +30,6 @@ app.post("/api/employees", async (req, res) => {
   res.status(200).json(newEmployee);
 });
 
-/* 4. Update Employee */
 app.put("/api/employees/:id", async (req, res) => {
   const id = Number(req.params.id);
   employees = employees.map(emp =>
@@ -39,14 +38,14 @@ app.put("/api/employees/:id", async (req, res) => {
   res.status(200).json({ message: "Updated successfully" });
 });
 
-/* 5. Delete Employee */
+
 app.delete("/api/employees/:id", async (req, res) => {
   const id = Number(req.params.id);
   employees = employees.filter(emp => emp.id !== id);
   res.status(200).json({ message: "Deleted successfully" });
 });
 
-/* 6. Get Compensation */
+
 app.get("/api/employees/compensation/:id", async (req, res) => {
   const id = Number(req.params.id);
   const emp = employees.find(e => e.id === id);
